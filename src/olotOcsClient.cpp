@@ -136,8 +136,8 @@ void olotOcsClient::ProcessData( const olotOcsMessage &message ){
 		return;
 	}
 	
-	const olotOcsMessage::sParameter &paremter = message.GetParameterAt( 0 );
-	if( paremter.type != olotOcsMessage::etFloat ){
+	const olotOcsMessage::sParameter &parameter = message.GetParameterAt( 0 );
+	if( parameter.type != olotOcsMessage::etFloat ){
 		return;
 	}
 	
@@ -155,7 +155,7 @@ void olotOcsClient::ProcessData( const olotOcsMessage &message ){
 	}
 	
 	const std::lock_guard<std::mutex> guard( pMutexData );
-	pExpressionValues[ i ] = clamp( paremter.valueFloat );
+	pExpressionValues[ i ] = clamp( parameter.valueFloat );
 }
 
 int olotOcsClient::OpenSocket(){
