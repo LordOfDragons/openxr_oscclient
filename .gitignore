@@ -1,3 +1,4 @@
+# ---> C++
 # Prerequisites
 *.d
 
@@ -30,3 +31,37 @@
 *.exe
 *.out
 *.app
+
+# ---> SCons
+# for projects that use SCons for building: http://http://www.scons.org/
+.sconsign.dblite
+
+# When configure fails, SCons outputs these
+config.log
+.sconf_temp
+*.pyc
+custom.py
+
+# ---> VisualStudioCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+# KDevelop
+*.kdev*
+build
+build.log
+
+# Visual Studio
+x64
+Release
+Debug

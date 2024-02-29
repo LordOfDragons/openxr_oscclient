@@ -1,0 +1,45 @@
+import os, fnmatch
+
+Import('parent_env')
+env = parent_env.Clone()
+
+def globFiles(env, search, pattern, result):
+	oldcwd = os.getcwd()
+	os.chdir(env.Dir('.').srcnode().abspath)
+	for root, dirs, files in os.walk(search):
+		for s in fnmatch.filter(files, pattern):
+			result.append(root + os.sep + s)
+	os.chdir(oldcwd)
+
+sources = []
+headers = []
+globFiles(env, '.', '*.cpp', sources)
+globFiles(env, '.', '*.h', headers)
+
+objects = [env.SharedObject(s) for s in sources]
+library = env.SharedLibrary('XrApiLayer_ocseyefacetracking', objects)
+
+env.Alias('build', library)
+
+installLibrary = env.Install(env.subst('$libdir/openxr_ocsclient'), library)
+
+install = [installLibrary]
+
+def UpdateModuleManifest(env, target, source):
+	with open(source[0].abspath, 'r') as f:
+		manifest = f.read()
+	
+	manifest = manifest.replace('@library_path@', env['LibraryInstallPath'])
+	
+	with open(target[0].abspath, 'w') as f:
+		f.write(manifest)
+	
+	return 0
+
+manifest = env.File('XrApiLayer_ocseyefacetracking.json')
+updatedManifest = env.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), LibraryInstallPath=installLibrary[0].abspath)
+
+install.append(env.Install(env.subst('$openxrsharedir/1/api_layers/implicit.d'), updatedManifest))
+
+env.Alias('install', install)
