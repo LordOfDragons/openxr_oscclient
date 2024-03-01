@@ -111,77 +111,7 @@ XrResult olotFacialTracker::GetFacialExpressionsHTC( XrFacialExpressionsHTC *fac
 		pOcsClient->GetExpressionValues( pOcsValues, olotOcsClient::ExpressionCount );
 		
 		if( pType == etEye ){
-			//const int result = pOcsClient->GetLastEyeData( data );
-			
-			/*
-			if( result == v::WORK && data.no_user ){
-				sampleTime = ( XrTime )data.timestamp;
-				
-				if( hasOpennessRight || hasOpennessLeft ){
-					
-					// reading the data is a bit convoluted.
-					// 
-					// the blinking has to be linked to the eye openess value from the verbose data.
-					// an openness value of 1 maps to a blinking value of 0. hence openness of 1
-					// produces a 0 weight for the blinking face shape. an openness value of 0
-					// maps to a blinking value of 1. hence openness of 0 produces a 1 weight for
-					// blinking face shape.
-					pWeights[ XR_EYE_EXPRESSION_RIGHT_BLINK_HTC ] = clamp( 1.0f - data.verbose_data.right.eye_openness );
-					pWeights[ XR_EYE_EXPRESSION_LEFT_BLINK_HTC ] = clamp( 1.0f - data.verbose_data.left.eye_openness );
-					
-					// the wide value has to be linked to the eye wide value from the expression data.
-					// a value of 0 produces 0 weight for wide face shape. a value of 1 produces 1.
-					// if value is larger than 0 blinking has to be 0 according to specification.
-					// the wide value obtained from the vive is quite unreliable. for normal looking
-					// ahead this can easily go up to 0.9 for no obvious reason. calibration seems
-					// tricky for this value.
-					pWeights[ XR_EYE_EXPRESSION_RIGHT_WIDE_HTC ] = clamp( data.expression_data.right.eye_wide );
-					if( pWeights[ XR_EYE_EXPRESSION_RIGHT_WIDE_HTC ] > 0.01f ){
-						pWeights[ XR_EYE_EXPRESSION_RIGHT_BLINK_HTC ] = 0.0f;
-					}
-
-					pWeights[ XR_EYE_EXPRESSION_LEFT_WIDE_HTC ] = clamp( data.expression_data.left.eye_wide );
-					if( pWeights[ XR_EYE_EXPRESSION_LEFT_WIDE_HTC ] > 0.01f ){
-						pWeights[ XR_EYE_EXPRESSION_LEFT_BLINK_HTC ] = 0.0f;
-					}
-
-					// the squeeze value has to be linked to the eye squeeze value from the expression data.
-					// a value of 0 produces 0 weight for squeeze face shape. a value of 1 produces 1.
-					// if value is larger than 0 blinking has to be 1 according to specification.
-					// the squeeze value seems to go at most up to 0.5 . could be problem with calibration.
-					// to get a reasonable result the squeeze value is muliplied by 2 to cover the entire range
-					const float squeezeFactor = 1.0f; //2.0f
-
-					pWeights[ XR_EYE_EXPRESSION_RIGHT_SQUEEZE_HTC ] =
-						clamp( data.expression_data.right.eye_squeeze * squeezeFactor );
-					if( pWeights[ XR_EYE_EXPRESSION_RIGHT_SQUEEZE_HTC ] > 0.01f ){
-						pWeights[ XR_EYE_EXPRESSION_RIGHT_BLINK_HTC ] = 1.0f;
-					}
-
-					pWeights[ XR_EYE_EXPRESSION_LEFT_SQUEEZE_HTC ] =
-						clamp( data.expression_data.left.eye_squeeze * squeezeFactor );
-					if( pWeights[ XR_EYE_EXPRESSION_LEFT_SQUEEZE_HTC ] > 0.01f ){
-						pWeights[ XR_EYE_EXPRESSION_LEFT_BLINK_HTC ] = 1.0f;
-					}
-
-					// there is no explicit value mapping to the eye down, up, left and right values
-					
-					pActive = true;
-					
-				}else{
-					{
-					const std::lock_guard<std::mutex> guard( olotApiLayer::Get().mutexLog );
-					log() << "eye openness not valid for both right and left eye" << std::endl;
-					}
-					
-					pActive = false;
-				}
-				
-			}else{
-				pActive = false;
-			}
-			*/
-			pActive = false;
+			pActive = true;
 			
 		}else{
 			pWeights[ XR_LIP_EXPRESSION_JAW_RIGHT_HTC ] = pOcsValues[ olotOcsClient::eeJawRight ];

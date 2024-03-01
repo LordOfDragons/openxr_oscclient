@@ -106,61 +106,6 @@ const XrInteractionProfileSuggestedBinding &suggestedBindings ){
 }
 
 XrResult olotEyeGazeTracker::GetActionStatePose( XrActionStatePose &state ){
-	//const int result = pOcsClient->GetLastEyeData( data );
-	
-	/*
-	if( result == v::WORK && data.no_user ){
-		const vae::SingleEyeData &ced = data.verbose_data.combined.eye_data;
-		const uint64_t cedv = ced.eye_data_validata_bit_mask;
-		
-		if( vae::DecodeBitMask( cedv, vae::SINGLE_EYE_DATA_GAZE_ORIGIN_VALIDITY )
-		&& vae::DecodeBitMask( cedv, vae::SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY ) ){
-			// store position. the specification does not state this explicitely but from the
-			// way data is reported the coordinte system used is relative to the eye camera
-			// not the head. the coordinate system used is:
-			// x: positive to the right
-			// y: positive upwards
-			// z: positive backwards
-			pPose.position.x = ced.gaze_origin_mm.x / 1e4f;
-			pPose.position.y = ced.gaze_origin_mm.y / 1e4f;
-			pPose.position.z = ced.gaze_origin_mm.z / 1e4f;
-			
-			// calculate orientation matching direction. we first convert into Drag[en]gine
-			// coordinate system so we can use the queaternion implementation used there.
-			// these coordinates are still relative to the eye camera. coordinate system is:
-			// x: positive to the right
-			// y: positive upwards
-			// z: positive forward
-			//
-			// hence z has to be flipped
-			XrVector3f dir;
-			dir.x =  ced.gaze_direction_normalized.x;
-			dir.y =  ced.gaze_direction_normalized.y;
-			dir.z = -ced.gaze_direction_normalized.z;
-
-			// calculate the horizontal and vertical rotation angles. for looking straight
-			// ahead this will be a rotation by 180 around y axis
-			const float rotY = -atan2f( -dir.x, dir.z );
-			const float rotX = -atan2f(  dir.y, sqrtf( dir.x * dir.x + dir.z * dir.z ) );
-			
-			// create quaternion from euler angles and store it
-			olotQuaternion orientation( olotQuaternion::CreateFromEuler( rotX, rotY, 0.0f ) );
-
-			pPose.orientation.x = orientation.x;
-			pPose.orientation.y = orientation.y;
-			pPose.orientation.z = orientation.z;
-			pPose.orientation.w = orientation.w;
-			
-			pActive = true;
-			
-		}else{
-			pActive = false;
-		}
-		
-	}else{
-		pActive = false;
-	}
-	*/
 	pActive = false;
 	
 	state.type = XR_TYPE_ACTION_STATE_POSE;
