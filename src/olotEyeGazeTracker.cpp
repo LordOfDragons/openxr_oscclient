@@ -44,6 +44,11 @@ pActive( false ),
 pOcsClient( nullptr ),
 pEyeEngineStarted( false )
 {
+	int i;
+	for( i=0; i<olotOcsClient::EyeStateCount; i++ ){
+		pOcsValues[ i ] = 0.0f;
+	}
+	
 	try{
 		pPathPose = instance.GetXrPathFor( "/user/eyes_ext/input/gaze_ext/pose" );
 		
@@ -105,8 +110,56 @@ const XrInteractionProfileSuggestedBinding &suggestedBindings ){
 	return XR_SUCCESS;
 }
 
+static inline float clamp( float value ){
+	return std::max( std::min( value, 1.0f ), 0.0f );
+}
+
+static inline float linearStep( float value, float from, float to ){
+	return clamp( ( value - from ) / ( to - from ) );
+}
+
+static inline float linearStep( float value, float from, float to, float mapFrom, float mapTo ){
+	return linearStep( value, from, to ) * ( mapTo - mapFrom ) + mapFrom;
+}
+
+static const float onePi = 3.14159265f / 180.0f;
+
 XrResult olotEyeGazeTracker::GetActionStatePose( XrActionStatePose &state ){
-	pActive = false;
+	try{
+		pOcsClient->GetEyeStateValues( pOcsValues, olotOcsClient::EyeStateCount );
+		
+		const float eyeRightX = pOcsValues[ olotOcsClient::eesRightEyeX ];
+		const float eyeLeftX = pOcsValues[ olotOcsClient::eesLeftEyeX ];
+		const float eyesY = pOcsValues[ olotOcsClient::eesEyesY ];
+		
+		const float maxRotX = onePi * 45.0f;
+		const float maxRotY = onePi * 30.0f;
+		
+		const float rotHorz = linearStep( ( eyeRightX + eyeLeftX ) / 2.0f, -1.0f, 1.0f, maxRotX, -maxRotX );
+		const float rotVert = linearStep( eyesY, -1.0f, 1.0f, -maxRotY, maxRotY );
+		
+		// store position. since we do not know the origin we assume 0
+		// x: positive to the right
+		// y: positive upwards
+		// z: positive backwards
+		pPose.position.x = 0.0f;
+		pPose.position.y = 0.0f;
+		pPose.position.z = 0.0f;
+		
+		// calculate orientation matching direction. we use Drag[en]gine quaternion
+		// code for this which is fine since quaternions work across coordinate systems
+		const olotQuaternion orientation( olotQuaternion::CreateFromEuler( rotVert, rotHorz, 0.0f ) );
+		
+		pPose.orientation.x = orientation.x;
+		pPose.orientation.y = orientation.y;
+		pPose.orientation.z = orientation.z;
+		pPose.orientation.w = orientation.w;
+		
+		pActive = true;
+		
+	}catch( const olotException & ){
+		pActive = false;
+	}
 	
 	state.type = XR_TYPE_ACTION_STATE_POSE;
 	state.next = nullptr;
@@ -116,7 +169,7 @@ XrResult olotEyeGazeTracker::GetActionStatePose( XrActionStatePose &state ){
 }
 
 XrResult olotEyeGazeTracker::LocateSpace( const olotSpace &space,
-XrSpace baseSpace, XrTime time, XrSpaceLocation *location ){
+XrSpace /*baseSpace*/, XrTime /*time*/, XrSpaceLocation *location ){
 	location->locationFlags = 0;
 	
 	if( pActive ){

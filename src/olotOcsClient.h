@@ -84,15 +84,29 @@ public:
 		eeTongueSquish,
 		eeTongueFlat,
 		eeTongueTwistLeft,
-		eeTongueTwistRight
+		eeTongueTwistRight,
+		eeLeftEyeLidExpandedSqueeze,
+		eeRightEyeLidExpandedSqueeze
 	};
 	
-	const static int ExpressionCount = eeTongueTwistRight + 1;
+	const static int ExpressionCount = eeRightEyeLidExpandedSqueeze + 1;
+	
+	enum eEyeState{
+		eesLeftEyeX,
+		eesRightEyeX,
+		eesEyesY
+	};
+	
+	const static int EyeStateCount = eesEyesY + 1;
 	
 private:
 	struct sExpression {
-		const char *ocsTarget;
+		std::string ocsTarget;
 		eExpression expression;
+	};
+	struct sEyeState {
+		std::string ocsTarget;
+		eEyeState state;
 	};
 	
 	int pUsageCount;
@@ -103,6 +117,9 @@ private:
 	
 	sExpression pExpressions[ ExpressionCount ];
 	float pExpressionValues[ ExpressionCount ];
+	
+	sEyeState pEyeStates[ EyeStateCount ];
+	float pEyeStateValues[ EyeStateCount ];
 	
 	
 	
@@ -138,6 +155,9 @@ public:
 	/** Copy expression values. */
 	void GetExpressionValues( float *values, int count );
 	
+	/** Copy eye state values. */
+	void GetEyeStateValues( float *values, int count );
+	
 	/** Log stream. */
 	std::ostream &log();
 	/*@}*/
@@ -149,6 +169,7 @@ private:
 	void pStartThread();
 	void pStopThread();
 	void pInitExpressions();
+	void pInitEyeStates();
 };
 
 #endif

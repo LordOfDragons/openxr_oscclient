@@ -29,10 +29,10 @@
 #include <vector>
 
 #include "openxr/openxr.h"
+#include "olotOcsClient.h"
 #include "olotStructs.h"
 
 class olotInstance;
-class olotOcsClient;
 
 
 /**
@@ -53,6 +53,8 @@ private:
 	
 	XrPath pPathPose;
 	ListActions pActions;
+	
+	float pOcsValues[ olotOcsClient::EyeStateCount ];
 	
 	bool pActive;
 	XrPosef pPose;

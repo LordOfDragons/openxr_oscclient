@@ -47,6 +47,11 @@ pActive( false ),
 pOcsClient( nullptr ),
 pDestroyed( false )
 {
+	int i;
+	for( i=0; i<olotOcsClient::ExpressionCount; i++ ){
+		pOcsValues[ i ] = 0.0f;
+	}
+	
 	try{
 		switch( createInfo.facialTrackingType ){
 		case XR_FACIAL_TRACKING_TYPE_EYE_DEFAULT_HTC:
@@ -111,6 +116,23 @@ XrResult olotFacialTracker::GetFacialExpressionsHTC( XrFacialExpressionsHTC *fac
 		pOcsClient->GetExpressionValues( pOcsValues, olotOcsClient::ExpressionCount );
 		
 		if( pType == etEye ){
+			const float openessRight = pOcsValues[ olotOcsClient::eeRightEyeLidExpandedSqueeze ];
+			const float openessLeft = pOcsValues[ olotOcsClient::eeLeftEyeLidExpandedSqueeze ];
+			
+			pWeights[ XR_EYE_EXPRESSION_RIGHT_BLINK_HTC ] = linearStep( openessRight, 0.0f, 0.75f, 0.0f, 1.0f );
+			pWeights[ XR_EYE_EXPRESSION_LEFT_BLINK_HTC ] = linearStep( openessLeft, 0.0f, 0.75f, 0.0f, 1.0f );
+			
+			pWeights[ XR_EYE_EXPRESSION_RIGHT_WIDE_HTC ] = linearStep( openessRight, 0.75f, 1.0f, 0.0f, 1.0f );
+			pWeights[ XR_EYE_EXPRESSION_LEFT_WIDE_HTC ] = linearStep( openessLeft, 0.75f, 1.0f, 0.0f, 1.0f );
+			
+			pWeights[ XR_EYE_EXPRESSION_RIGHT_SQUEEZE_HTC ] = 0.0f;
+			pWeights[ XR_EYE_EXPRESSION_LEFT_SQUEEZE_HTC ] = 0.0f;
+			
+			// there is no explicit value mapping to the eye down, up, left and right values
+			
+			/*
+			not mapped ocs values:
+			*/
 			pActive = true;
 			
 		}else{
