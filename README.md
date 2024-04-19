@@ -13,7 +13,7 @@ If this is a problem with an application please create an issue on GitHub.
 
 # Motivation
 
-Applications like [https://github.com/SummerSigh/ProjectBabble](Project Babble)
+Applications like [https://github.com/SummerSigh/ProjectBabble/](Project Babble)
 stream tracked data to an OSC compatible client. This client can be for
 example [https://docs.vrcft.io/](VRCFaceTracking) to manipulate an avatar
 inside a host application which is typically using OpenVR. Being able to
